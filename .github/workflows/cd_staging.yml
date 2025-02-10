@@ -7,11 +7,10 @@ on:
 jobs:
   redeploy_frontend:
     name: Deploying everything to the staging cluster
-
-
+    runs-on: ubuntu-latest
     steps:
-      - name: ssh into ubuntu machine
-      - run: |
+      name: ssh into ubuntu machine
+      run: |
           echo {{ secrets.SSH_PRIVATE_KEY }} &> ~/ssh_key
           ssh -i ~/ssh_key root@52.91.192.173
           npm install
