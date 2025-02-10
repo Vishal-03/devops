@@ -11,7 +11,7 @@ jobs:
     steps:
       name: ssh into ubuntu machine
       run: |
-          echo {{ secrets.SSH_PRIVATE_KEY }} &> ~/ssh_key
+          echo "{{ secrets.SSH_PRIVATE_KEY }}"" &> ~/ssh_key
           ssh -i ~/ssh_key root@52.91.192.173
           npm install
           npm run build
