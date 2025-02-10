@@ -1,20 +1,30 @@
 name: Deploy to staging
+
 on:
   push:
     branches:
-      - [ main ]
+      - main  # This triggers the workflow on pushes to the main branch
 
 jobs:
   redeploy_frontend:
-    name: Deploying everything to the staging cluster
     runs-on: ubuntu-latest
+    name: Deploying everything to the staging cluster
     steps:
-      name: ssh into ubuntu machine
-      run: |
-          echo "{{ secrets.SSH_PRIVATE_KEY }}"" &> ~/ssh_key
-          ssh -i ~/ssh_key root@52.91.192.173
-          npm install
-          npm run build
-          pm2 restart http
-          pm2 restart fe
-          pm2 restart ws-server
+      - name: Checkout code
+        uses: actions/checkout@v3  # Ensures the latest code is pulled from the repository
+
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
+          chmod 600 ~/ssh_key  # Set the correct permissions for the SSH key
+
+      - name: Deploy frontend
+        run: |
+          ssh -i ~/ssh_key root@52.91.192.173 << 'EOF'
+            cd /path/to/your/project  # Make sure to navigate to the correct project directory
+            npm install
+            npm run build
+            pm2 restart http
+            pm2 restart fe
+            pm2 restart ws-server
+          EOF
